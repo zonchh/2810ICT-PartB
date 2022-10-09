@@ -95,6 +95,8 @@ def show_plot_4():
         enddatevalue = enddate.get()
         keywordValue = keyword.get()
         if startdatevalue != '' and enddatevalue != '':
+            validateDate(startdatevalue)
+            validateDate(enddatevalue)
             if keywordValue != '':
                 mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) &
                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
@@ -133,7 +135,7 @@ def show_plot_4():
 
 
     except ValueError:
-        tk.messagebox.showerror("Information", "An error occurred: " + ValueError)
+        tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
     return None
 
 def show_plot_3():
@@ -147,6 +149,8 @@ def show_plot_3():
         enddatevalue = enddate.get()
         keywordValue = keyword.get()
         if startdatevalue != '' and enddatevalue != '':
+            validateDate(startdatevalue)
+            validateDate(enddatevalue)
             if keywordValue != '':
                 mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) &
                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
@@ -186,7 +190,7 @@ def show_plot_3():
 
 
     except ValueError:
-        tk.messagebox.showerror("Information", "An error occurred: " + ValueError)
+        tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
     return None
 
 def show_plot_2():
@@ -200,6 +204,8 @@ def show_plot_2():
         enddatevalue = enddate.get()
         keywordValue = keyword.get()
         if startdatevalue != '' and enddatevalue != '':
+            validateDate(startdatevalue)
+            validateDate(enddatevalue)
             if keywordValue != '':
                 mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) &
                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
@@ -246,9 +252,8 @@ def show_plot_2():
 
 
     except ValueError:
-        tk.messagebox.showerror("Information", "An error occurred: " + ValueError)
+        tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
     return None
-
 
 def show_plot_1():
     # R3.1 The software shall display the average amount of traffic accidents in each hour of the day in relation to a user-input time frame.
@@ -256,13 +261,17 @@ def show_plot_1():
     try:
         excel_filename = r"{}".format(file_path)
         df = pd.read_csv(excel_filename)
-        #df['ACCIDENT_TIME'] = pd.to_datetime(str(df['ACCIDENT_DATE']) + str(df['ACCIDENT_TIME']), format = '%d-%m-%Y%H.%M.%S', dayfirst=True)
+        df['ACCIDENT_HOUR'] = df['ACCIDENT_TIME'].str[:2]
         df['ACCIDENT_DATE'] = pd.to_datetime(df['ACCIDENT_DATE'], dayfirst=True) # Convert the ACCIDENT_DATE to a DateTime
-        #df['HOUR_OF_DAY'] = pd.date_range('ACCIDENT_TIME', periods=24, freq='60min')
         startdatevalue = startdate.get()
         enddatevalue = enddate.get()
+        validateDate(startdatevalue)
+        validateDate(enddatevalue)
         keywordValue = keyword.get()
         if startdatevalue != '' and enddatevalue != '':
+            validateDate(startdatevalue)
+            validateDate(enddatevalue)
+            numberOfDays = (datetime.strptime(enddatevalue, '%d-%m-%Y') - datetime.strptime(startdatevalue, '%d-%m-%Y')).days
             if keywordValue != '':
                 mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
@@ -276,27 +285,32 @@ def show_plot_1():
             if keywordValue != '':
                 mask = (df['ACCIDENT_TYPE'].str.contains(keywordValue))
                 df = df.loc[mask]
+            numberOfDays = (df['ACCIDENT_DATE'].max() - df['ACCIDENT_DATE'].min()).days
+            startdatevalue = df['ACCIDENT_DATE'].min().strftime('%d-%m-%Y')
+            enddatevalue = df['ACCIDENT_DATE'].max().strftime('%d-%m-%Y')
 
-        # Create the plot
+        # Create the plot https://www.w3schools.in/matplotlib/tutorials/plot-types
         plt.clf()  # Clear the plot if it already exists
-        df = df.groupby(['ACCIDENT_DATE'])['OBJECTID'].size().reset_index(name='counts')
+        df = df.sort_values(by=['ACCIDENT_HOUR'], ascending=False)
+        df = df.groupby(['ACCIDENT_HOUR'])['OBJECTID'].size().reset_index(name='counts')
         # https://matplotlib.org/stable/tutorials/introductory/pyplot.html
-        plt.bar(df['ACCIDENT_DATE'], df['counts'] / 24)  # Group by ACCIDENT_DATE and divide count of OBJECTID by 24 hours to get accidents per day
+        plt.bar(df['ACCIDENT_HOUR'], df['counts']/numberOfDays)  # Group by ACCIDENT_HOUR and divide count of OBJECTID by numberOfDays to get accidents per hour
+        # Setup title
         plt.suptitle('Accidents Per Hour', fontsize=15)
         # Setup subtitle
         if startdatevalue != '' and enddatevalue != '':
             if keywordValue != '':
-                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' and Accident Type like ' + keywordValue, fontsize=12)
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)' + ' and Accident Type like ' + keywordValue, fontsize=12)
             else:
-                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue, fontsize=12)
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)', fontsize=12)
         # Add axis labels
-        plt.ylabel('Daily Accidents per hour', fontsize=12)
-        plt.xlabel('Dates', fontsize=12)
+        plt.ylabel('Average Accidents per hour', fontsize=12)
+        plt.xlabel('Hours of the day', fontsize=12)
         # plot the graph
         plt.show()
 
     except ValueError:
-        tk.messagebox.showerror("Information", "An error occurred: " + ValueError)
+        tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
     return None
 
 def Load_keywords():
@@ -307,7 +321,7 @@ def Load_keywords():
         df = pd.read_csv(excel_filename)
 
     except ValueError:
-        tk.messagebox.showerror("Information", "An error occurred: " + ValueError)
+        tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
         return None
 
 
@@ -330,6 +344,8 @@ def Load_csv_data():
         enddatevalue = enddate.get()
         keywordValue = keyword.get()
         if startdatevalue != '' and enddatevalue != '':
+            validateDate(startdatevalue)
+            validateDate(enddatevalue)
             if keywordValue != '':
                 mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
@@ -345,7 +361,7 @@ def Load_csv_data():
                 df = df.loc[mask]
 
     except ValueError:
-        tk.messagebox.showerror("Information", "An error occurred: " + ValueError)
+        tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
         return None
 
     df = df.sort_values(by=['ACCIDENT_DATE'], ascending=False)
@@ -367,5 +383,10 @@ def clear_grid_data():
     tv1.delete(*tv1.get_children())
     return None
 
+def validateDate(date_text):
+    try:
+        datetime.strptime(date_text, '%d-%m-%Y')
+    except ValueError:
+        tk.messagebox.showerror("Information", "Incorrect date format, should be DD-MM-YYYY")
 
 root.mainloop()
