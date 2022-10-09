@@ -4,7 +4,6 @@ import pandas as pd
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-# plt.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
@@ -97,9 +96,11 @@ def show_plot_4():
         if startdatevalue != '' and enddatevalue != '':
             validateDate(startdatevalue)
             validateDate(enddatevalue)
+            numberOfDays = (datetime.strptime(enddatevalue, '%d-%m-%Y') - datetime.strptime(startdatevalue,
+                                                                                            '%d-%m-%Y')).days
             if keywordValue != '':
-                mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) &
-                       (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
+                mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
+                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
                        df['ACCIDENT_TYPE'].str.contains(keywordValue)
             else:
                 mask = (df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
@@ -110,6 +111,9 @@ def show_plot_4():
             if keywordValue != '':
                 mask = (df['ACCIDENT_TYPE'].str.contains(keywordValue))
                 df = df.loc[mask]
+            numberOfDays = (df['ACCIDENT_DATE'].max() - df['ACCIDENT_DATE'].min()).days
+            startdatevalue = df['ACCIDENT_DATE'].min().strftime('%d-%m-%Y')
+            enddatevalue = df['ACCIDENT_DATE'].max().strftime('%d-%m-%Y')
 
         # Create the plot
         plt.clf()  # Clear the plot if it already exists
@@ -125,11 +129,9 @@ def show_plot_4():
         # Setup subtitle
         if startdatevalue != '' and enddatevalue != '':
             if keywordValue != '':
-                plt.title(
-                    'Between ' + startdatevalue + ' and ' + enddatevalue + ' and Accident Type like ' + keywordValue,
-                    fontsize=12)
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)' + ' and Accident Type like ' + keywordValue, fontsize=12)
             else:
-                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue, fontsize=12)
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)', fontsize=12)
         # plot the graph
         plt.show()
 
@@ -151,9 +153,11 @@ def show_plot_3():
         if startdatevalue != '' and enddatevalue != '':
             validateDate(startdatevalue)
             validateDate(enddatevalue)
+            numberOfDays = (datetime.strptime(enddatevalue, '%d-%m-%Y') - datetime.strptime(startdatevalue,
+                                                                                            '%d-%m-%Y')).days
             if keywordValue != '':
-                mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) &
-                       (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
+                mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
+                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
                        df['ACCIDENT_TYPE'].str.contains(keywordValue)
             else:
                 mask = (df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
@@ -164,6 +168,9 @@ def show_plot_3():
             if keywordValue != '':
                 mask = (df['ACCIDENT_TYPE'].str.contains(keywordValue))
                 df = df.loc[mask]
+            numberOfDays = (df['ACCIDENT_DATE'].max() - df['ACCIDENT_DATE'].min()).days
+            startdatevalue = df['ACCIDENT_DATE'].min().strftime('%d-%m-%Y')
+            enddatevalue = df['ACCIDENT_DATE'].max().strftime('%d-%m-%Y')
 
         # Create the plot
         plt.clf()  # Clear the plot if it already exists
@@ -180,14 +187,11 @@ def show_plot_3():
         # Setup subtitle
         if startdatevalue != '' and enddatevalue != '':
             if keywordValue != '':
-                plt.title(
-                    'Between ' + startdatevalue + ' and ' + enddatevalue + ' and Accident Type like ' + keywordValue,
-                    fontsize=12)
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)' + ' and Accident Type like ' + keywordValue, fontsize=12)
             else:
-                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue, fontsize=12)
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)', fontsize=12)
         # plot the graph
         plt.show()
-
 
     except ValueError:
         tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
@@ -206,9 +210,11 @@ def show_plot_2():
         if startdatevalue != '' and enddatevalue != '':
             validateDate(startdatevalue)
             validateDate(enddatevalue)
+            numberOfDays = (datetime.strptime(enddatevalue, '%d-%m-%Y') - datetime.strptime(startdatevalue,
+                                                                                            '%d-%m-%Y')).days
             if keywordValue != '':
-                mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) &
-                       (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
+                mask = ((df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
+                        (df['ACCIDENT_DATE'] <= datetime.strptime(enddatevalue, '%d-%m-%Y'))) & \
                        df['ACCIDENT_TYPE'].str.contains(keywordValue)
             else:
                 mask = (df['ACCIDENT_DATE'] > datetime.strptime(startdatevalue, '%d-%m-%Y')) & \
@@ -219,6 +225,9 @@ def show_plot_2():
             if keywordValue != '':
                 mask = (df['ACCIDENT_TYPE'].str.contains(keywordValue))
                 df = df.loc[mask]
+            numberOfDays = (df['ACCIDENT_DATE'].max() - df['ACCIDENT_DATE'].min()).days
+            startdatevalue = df['ACCIDENT_DATE'].min().strftime('%d-%m-%Y')
+            enddatevalue = df['ACCIDENT_DATE'].max().strftime('%d-%m-%Y')
 
         # Create the plot
         plt.clf()  # Clear the plot if it already exists
@@ -231,12 +240,9 @@ def show_plot_2():
         # Setup subtitle
         if startdatevalue != '' and enddatevalue != '':
             if keywordValue != '':
-                plt.title(
-                    'Between ' + startdatevalue + ' and ' + enddatevalue + ' and Accident Type like ' + keywordValue,
-                    fontsize=12)
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)' + ' and Accident Type like ' + keywordValue, fontsize=12)
             else:
-                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue, fontsize=12)
-        #plt.show()
+                plt.title('Between ' + startdatevalue + ' and ' + enddatevalue + ' (' + str(numberOfDays) + ' days)', fontsize=12)
         # Add series plot for non Alcohol based accidents
         dfNoAlcohol = df
         dfNoAlcohol = dfNoAlcohol.loc[dfNoAlcohol['ALCOHOLTIME'] == 'No']
@@ -249,7 +255,6 @@ def show_plot_2():
         plt.xlabel('Dates', fontsize=12)
         # plot the graph
         plt.show()
-
 
     except ValueError:
         tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
@@ -265,8 +270,6 @@ def show_plot_1():
         df['ACCIDENT_DATE'] = pd.to_datetime(df['ACCIDENT_DATE'], dayfirst=True) # Convert the ACCIDENT_DATE to a DateTime
         startdatevalue = startdate.get()
         enddatevalue = enddate.get()
-        validateDate(startdatevalue)
-        validateDate(enddatevalue)
         keywordValue = keyword.get()
         if startdatevalue != '' and enddatevalue != '':
             validateDate(startdatevalue)
@@ -289,11 +292,11 @@ def show_plot_1():
             startdatevalue = df['ACCIDENT_DATE'].min().strftime('%d-%m-%Y')
             enddatevalue = df['ACCIDENT_DATE'].max().strftime('%d-%m-%Y')
 
-        # Create the plot https://www.w3schools.in/matplotlib/tutorials/plot-types
+        # Create the plot ref - https://www.w3schools.in/matplotlib/tutorials/plot-types
         plt.clf()  # Clear the plot if it already exists
         df = df.sort_values(by=['ACCIDENT_HOUR'], ascending=False)
         df = df.groupby(['ACCIDENT_HOUR'])['OBJECTID'].size().reset_index(name='counts')
-        # https://matplotlib.org/stable/tutorials/introductory/pyplot.html
+        # ref - https://matplotlib.org/stable/tutorials/introductory/pyplot.html
         plt.bar(df['ACCIDENT_HOUR'], df['counts']/numberOfDays)  # Group by ACCIDENT_HOUR and divide count of OBJECTID by numberOfDays to get accidents per hour
         # Setup title
         plt.suptitle('Accidents Per Hour', fontsize=15)
@@ -324,13 +327,10 @@ def Load_keywords():
         tk.messagebox.showerror("Information", "An error occurred: " + str(ValueError))
         return None
 
-
     # Handle creation of the data view
-   # clear_grid_data()
     df = (df['ACCIDENT_TYPE'].unique())
     keywordlist = '\n'.join(df.tolist())
     tk.messagebox.showinfo("Keyword List", keywordlist)
-
     return None
 
 def Load_csv_data():
